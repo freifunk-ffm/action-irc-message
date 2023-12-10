@@ -1,0 +1,26 @@
+---
+name: "Lint"
+
+# yamllint disable-line rule:truthy
+on: [push, pull_request]
+
+jobs:
+  lint-yaml:
+    name: "YAML"
+    runs-on: ubuntu-22.04
+    env:
+      YAML_FILES: |
+        .github/workflows/lint.yml
+        action.yml
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: sudo apt-get update && sudo apt-get install -y yamllint
+      - name: Validate YAML Files
+        run: yamllint $YAML_FILES
+
+  lint-python:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chartboost/ruff-action@v1

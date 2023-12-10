@@ -1,0 +1,31 @@
+---
+# yamllint disable rule:line-length
+
+name: "Send message to IRC"
+inputs:
+  irc-server:
+    required: true
+  irc-nickname:
+    required: true
+  irc-target:
+    description: 'nickname or channel'
+    required: true
+  irc-port:
+    default: 6697
+  message:
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install Dependencies
+      run: pip install irc
+      shell: bash
+    - name: Send message
+      run: |
+              python irc-message.py -p "${{ inputs.irc-port }}" "${{ inputs.irc-server }}" "${{ inputs.irc-nickname }}" "${{ inputs.irc-target }}" "${{ inputs.message }}"
+      shell: bash
